@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestyConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             AutoLoadConfig="0" AutoStartTest="false" SpecialProcessing="false">
+  <TestConfigs>
+    <Version>2.0</Version>
+    <Description>Default Configuration</Description>
+    <NumberOfTestRuns>1</NumberOfTestRuns>
+    <NumberOfThreads>1</NumberOfThreads>
+    <QueryDelay>10</QueryDelay>
+    <QueryTimeout>5000</QueryTimeout>
+    <EventThreshold>1</EventThreshold>
+    <AsyncDownloads>true</AsyncDownloads>
+    <ShowEventsGUI>false</ShowEventsGUI>
+    <LoginToADWithDefault>false</LoginToADWithDefault>
+    <LogEventsToFile>false</LogEventsToFile>
+    <TestURLs>
+      http://localhost
+    </TestURLs>
+  </TestConfigs>
+  <TestConfigs>
+  <Version>2.0</Version>
+    <Description>NOAA Staff Directory</Description>
+    <NumberOfTestRuns>100</NumberOfTestRuns>
+    <NumberOfThreads>5</NumberOfThreads>
+    <QueryDelay>10</QueryDelay>
+    <QueryTimeout>5000</QueryTimeout>
+    <EventThreshold>1</EventThreshold>
+    <AsyncDownloads>true</AsyncDownloads>
+    <ShowEventsGUI>true</ShowEventsGUI>
+    <LoginToADWithDefault>false</LoginToADWithDefault>
+    <LogEventsToFile>false</LogEventsToFile>
+    <TestURLs>
+      http://localhost:64748/search?fs=1&amp;ln=bro,
+      http://nsdp1.rdc.noaa.gov/home?stats=1,
+      http://nsdp1.rdc.noaa.gov/search?ln=to,
+      http://nsdp1.rdc.noaa.gov/search?ln=bro,
+      http://nsdp1.rdc.noaa.gov/api/members?q=smith,
+      http://nsdp2.rdc.noaa.gov/home?stats=1,
+      http://nsdp2.rdc.noaa.gov/search?ln=to,
+      http://nsdp2.rdc.noaa.gov/search?ln=bro,
+      http://nsdp2.rdc.noaa.gov/api/members?q=smith
+    </TestURLs>
+  </TestConfigs>
+  <TestConfigs>
+    <Version>1.1</Version>
+    <Description>Vestas Sharepoint</Description>
+    <NumberOfThreads>1</NumberOfThreads>
+    <NumberOfTestRuns>1</NumberOfTestRuns>
+    <QueryDelay>10</QueryDelay>
+    <QueryTimeout>5000</QueryTimeout>
+    <EventThreshold>1</EventThreshold>
+    <ADUsersFileName>adusers_vestas_test.txt</ADUsersFileName>
+    <AsyncDownloads>true</AsyncDownloads>
+    <ShowEventsGUI>false</ShowEventsGUI>
+    <LoginToADWithDefault>false</LoginToADWithDefault>
+    <LogQueryResults>false</LogQueryResults>
+    <LogEventsToFile>false</LogEventsToFile>
+    <TestURLs>
+      http://thehub.vestas.net,
+      http://ncr.vestas.net/,
+      http://itordering.vestas.net/
+    </TestURLs>
+    <QueryText />
+    <QueryTextUserID />
+    <SearchKeywords />
+  </TestConfigs>
+  <TestConfigs>
+    <Version>1.1</Version>
+    <Description>Vestas FAST Search</Description>
+    <NumberOfThreads>5</NumberOfThreads>
+    <NumberOfTestRuns>1</NumberOfTestRuns>
+    <QueryDelay>10</QueryDelay>
+    <QueryTimeout>10000</QueryTimeout>
+    <EventThreshold>10</EventThreshold>
+    <ADUsersFileName>adusers_vestas_all.txt</ADUsersFileName>
+    <AsyncDownloads>true</AsyncDownloads>
+    <ShowEventsGUI>false</ShowEventsGUI>
+    <LoginToADWithDefault>false</LoginToADWithDefault>
+    <LogQueryResults>false</LogQueryResults>
+    <LogEventsToFile>false</LogEventsToFile>
+    <TestURLs>
+      http://dkrdsfastp01:15100/cgi-bin/xsearch?offset=0&amp;hits=10,
+      http://dkrdsfastpp01:15100/cgi-bin/xsearch?offset=0&amp;hits=10,
+      http://dkrdsfastit01:15100/cgi-bin/xsearch?offset=0&amp;hits=10
+    </TestURLs>
+    <QueryText>&amp;query=</QueryText>
+    <QueryTextUserID>&amp;qtf_securityfql:uid=&lt;userid&gt;</QueryTextUserID>
+    <SearchKeywords>vestas,tower,nacelle,energy,wind,blade</SearchKeywords>
+  </TestConfigs>
+</TestyConfig>

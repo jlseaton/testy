@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PublishUrlHistory>publish\|http://webmon.vestas.net/testy/|http://localhost/testy/</PublishUrlHistory>
+    <InstallUrlHistory>http://n9913/testy/|\\N9913\c%24\inetpub\wwwroot\Testy\|\\N9913\c%24\inetpub\\Testy\|\\N9913\c%24\WWW\Testy\|\\dkrdsbatman01\d%24\WWW\Testy\</InstallUrlHistory>
+    <SupportUrlHistory>
+    </SupportUrlHistory>
+    <UpdateUrlHistory>
+    </UpdateUrlHistory>
+    <BootstrapperUrlHistory>
+    </BootstrapperUrlHistory>
+    <ErrorReportUrlHistory>
+    </ErrorReportUrlHistory>
+    <FallbackCulture>en-US</FallbackCulture>
+    <VerifyUploadedFiles>false</VerifyUploadedFiles>
+  </PropertyGroup>
+</Project>
