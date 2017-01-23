@@ -14,26 +14,23 @@ namespace Testy
 {
     public partial class MainForm : Form
     {
-        bool running = false, autoStart = false, initialStart = false, specialProcessing = false;
+        bool Running = false, AutoStart = false, InitialStart = false, SpecialProcessing = false;
 
-        int runCount = 0;
+        int RunCount = 0, SelectedConfigIndex = 0;
 
-        string configFileName = "config.xml";
+        string ConfigFileName = "config.xml", LogFileName = "testy.log";
 
-        string logFileName = "testy.log";
-        StreamWriter logWriter;
+        StreamWriter LogWriter;
 
-        DateTime startTime = DateTime.Now;
-        Random random = new Random((int)System.DateTime.Now.Ticks);
+        DateTime StartTime = DateTime.Now;
+        Random Random = new Random((int)System.DateTime.Now.Ticks);
 
-        ManualResetEvent[] threadsDone;
-        TestContext[] threadContexts;
+        ManualResetEvent[] ThreadsDone;
+        TestContext[] ThreadContexts;
 
         List<TestConfig> TestConfigs = new List<TestConfig>();
 
-        int SelectedConfigIndex = 0;
-
-        private TestConfig Config
+        TestConfig Config
         {
             get
             {
@@ -79,12 +76,12 @@ namespace Testy
                     }
                 }
 
-                if (File.Exists(configFileName))
+                if (File.Exists(ConfigFileName))
                 {
                     try
                     {
                         // Load all configs from XML
-                        TestConfigs = LoadConfig(configFileName);
+                        TestConfigs = LoadConfig(ConfigFileName);
 
                         // Populate UI from selected config values
                         ChangeConfig(Config);
@@ -95,7 +92,7 @@ namespace Testy
                     }
                 }
 
-                if (specialProcessing)
+                if (SpecialProcessing)
                 {
                     string status = new SpecialProcessing(Log).DoSpecialProcessing();
                     MessageBox.Show(status, "Special Processing Message");
@@ -113,7 +110,7 @@ namespace Testy
         {
             try
             {
-                SaveConfig(configFileName);
+                SaveConfig(ConfigFileName);
             }
             catch (Exception ex)
             {
@@ -127,11 +124,11 @@ namespace Testy
         {
             try
             {
-                if (running)
+                if (Running)
                 {
                     Log("Stopping Test");
 
-                    running = false;
+                    Running = false;
 
                     this.panelConfig.Enabled = false;
                     this.buttonStart.Enabled = false;
@@ -140,7 +137,7 @@ namespace Testy
                     try
                     {
                         // Wait twice as long as the maximum time a web request can take
-                        WaitHandle.WaitAll(threadsDone, Config.QueryTimeout * 2); 
+                        WaitHandle.WaitAll(ThreadsDone, Config.QueryTimeout * 2); 
                     }
                     catch (Exception ex)
                     {
@@ -162,9 +159,9 @@ namespace Testy
                     if (this.checkBoxLogFile.Checked)
                     {
                         StreamWriter sw;
-                        logFileName = DateTime.Now.ToShortDateString()
+                        LogFileName = DateTime.Now.ToShortDateString()
                             .Replace("/", "_") + "_testy.log";
-                        sw = File.CreateText(logFileName);
+                        sw = File.CreateText(LogFileName);
                         sw.Close();
                     }
 
@@ -181,12 +178,12 @@ namespace Testy
                     Config.QueryDelay = (int)this.numericUpDownSleep.Value;
                     Config.EventThreshold = (int)this.numericUpDownEventThreshhold.Value;
 
-                    threadsDone = new ManualResetEvent[Config.NumberOfThreads];
-                    threadContexts = new TestContext[Config.NumberOfThreads];
+                    ThreadsDone = new ManualResetEvent[Config.NumberOfThreads];
+                    ThreadContexts = new TestContext[Config.NumberOfThreads];
 
-                    startTime = DateTime.Now; 
+                    StartTime = DateTime.Now; 
                     
-                    runCount = 0;
+                    RunCount = 0;
 
                     progressBar1.Minimum = 0;
                     progressBar1.Maximum = (int) this.numericUpDownTestRuns.Value;
@@ -195,7 +192,7 @@ namespace Testy
                     
                     for (int i = 0; i < Config.NumberOfThreads; i++)
                     {
-                        threadsDone[i] = new ManualResetEvent(false);
+                        ThreadsDone[i] = new ManualResetEvent(false);
 
                         TestContext context = 
                             new TestContext(i, chunkSize, this.comboBoxURL.Text, Config);
@@ -203,7 +200,7 @@ namespace Testy
                         //TODO: Possibly do away with ThreadPool
                         if (ThreadPool.QueueUserWorkItem(TestThread, context))
                         {
-                            running = true;
+                            Running = true;
                             this.buttonStart.Text = "&Stop";
 
                             Log("Started Test Thread #" +
@@ -228,13 +225,13 @@ namespace Testy
         private async void TestThread(Object startContext)
         {
             TestContext context = (TestContext)startContext;
-            threadContexts[context.ThreadNumber] = context;
+            ThreadContexts[context.ThreadNumber] = context;
 
             try
             {
                 for (int i = 0; i < context.RunCount; i++)
                 {
-                    if (!running)
+                    if (!Running)
                         break;
 
                     using (var client = 
@@ -249,7 +246,7 @@ namespace Testy
                         string results = response.Content.ReadAsStringAsync().Result;
                         string length = results.Length.ToString();
 
-                        int sleep = random.Next((int)this.numericUpDownSleep.Value);
+                        int sleep = Random.Next((int)this.numericUpDownSleep.Value);
 
                         if (i % Config.EventThreshold == 0 || i == 0)
                         {
@@ -265,7 +262,7 @@ namespace Testy
                         }
                     }
 
-                    runCount++;
+                    RunCount++;
                 }
             }
             catch (Exception ex)
@@ -273,24 +270,24 @@ namespace Testy
                 LogEvent("TestException: " + ex.Message);
             }
 
-            TimeSpan duration = DateTime.Now - startTime;
+            TimeSpan duration = DateTime.Now - StartTime;
 
             UpdateProgress(context);
 
             Log("Ending Test Thread #" + context.ThreadNumber.ToString());
 
-            threadsDone[context.ThreadNumber].Set();
+            ThreadsDone[context.ThreadNumber].Set();
 
             // If this the end of the last thread, update as test complete
-            if (context.ThreadNumber >= threadContexts.Length - 1)
+            if (context.ThreadNumber >= ThreadContexts.Length - 1)
             {
                 Thread.Sleep(Config.QueryTimeout);  // Delay to allow for the last updates
 
-                Log("Stop Test,Run Count:" + runCount.ToString() + 
+                Log("Stop Test,Run Count:" + RunCount.ToString() + 
                     ",Duration:" + ((int)duration.TotalMinutes).ToString() + " minutes " + 
                     (int)duration.Seconds + " seconds");
 
-                running = false;
+                Running = false;
                 UpdateButton(false);
             }
         }
@@ -301,10 +298,10 @@ namespace Testy
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
-            if (autoStart
-                && !initialStart)
+            if (AutoStart
+                && !InitialStart)
             {
-                initialStart = true;
+                InitialStart = true;
                 this.buttonStart_Click(this, new EventArgs());
             }
         }
@@ -381,7 +378,7 @@ namespace Testy
 
             lock (this.progressBar1)
             {
-                this.progressBar1.Value = runCount;
+                this.progressBar1.Value = RunCount;
             }
         }
 
@@ -444,10 +441,10 @@ namespace Testy
 
             SelectedConfigIndex = appConfig.AutoLoadConfig;
 
-            autoStart = appConfig.AutoStartTest;
+            AutoStart = appConfig.AutoStartTest;
             this.checkBoxAutoStart.Checked = appConfig.AutoStartTest;
 
-            specialProcessing = appConfig.SpecialProcessing;
+            SpecialProcessing = appConfig.SpecialProcessing;
 
             // Load test specific config elements
             var testConfigs = 
@@ -529,11 +526,11 @@ namespace Testy
             {
                 if (this.checkBoxLogFile.Checked)
                 {
-                    //lock (sw)
+                    //lock (LogWriter)
                     {
-                        logWriter = File.AppendText(logFileName);
-                        logWriter.WriteLine(text);
-                        logWriter.Close();
+                        LogWriter = File.AppendText(LogFileName);
+                        LogWriter.WriteLine(text);
+                        LogWriter.Close();
                     }
                 }
             }
