@@ -14,26 +14,25 @@ namespace Testy
 {
     public partial class MainForm : Form
     {
-        private bool running = false;
-        private bool autoStart = false, initialStart = false;
-        private bool specialProcessing = false;
+        bool running = false, autoStart = false, initialStart = false, specialProcessing = false;
 
-        private int runCount = 0;
+        int runCount = 0;
 
-        private string configFileName = "config.xml";
+        string configFileName = "config.xml";
 
-        private string logFileName = "testy.log";
-        private StreamWriter logWriter;
+        string logFileName = "testy.log";
+        StreamWriter logWriter;
 
-        private DateTime startTime = DateTime.Now;
-        private Random random = new Random((int)System.DateTime.Now.Ticks);
+        DateTime startTime = DateTime.Now;
+        Random random = new Random((int)System.DateTime.Now.Ticks);
 
-        private ManualResetEvent[] threadsDone;
-        private TestContext[] threadContexts;
+        ManualResetEvent[] threadsDone;
+        TestContext[] threadContexts;
 
-        private List<TestConfig> TestConfigs = new List<TestConfig>();
+        List<TestConfig> TestConfigs = new List<TestConfig>();
 
-        private int SelectedConfigIndex = 0;
+        int SelectedConfigIndex = 0;
+
         private TestConfig Config
         {
             get
